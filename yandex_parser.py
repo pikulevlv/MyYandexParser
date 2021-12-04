@@ -5,6 +5,8 @@ from transliterate import translit
 import re
 import csv
 from pprint import pprint
+import random
+import time
 
 # create YandexImage parser's instance
 parser = YandexImage()
@@ -126,6 +128,7 @@ def img_saver(request_str: str, img_count: int,
         with open(img_path, 'wb') as handler:
             handler.write(img_data)
             print("Image downloaded!")
+        time.sleep(random.random()*2)
 
 
 if __name__ == '__main__':
