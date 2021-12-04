@@ -134,5 +134,5 @@ if __name__ == '__main__':
     for color in color_list:
         request_str_ = color
         request_str_ = latinic('интерьер в цвете ' + color)
-        img_saver(request_str=request_str_, img_count=2,
+        img_saver(request_str=request_str_, img_count=50,
                   img_dir_path=img_dir_path_, parser=parser)
