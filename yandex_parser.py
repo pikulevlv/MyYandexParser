@@ -7,6 +7,7 @@ import csv
 from pprint import pprint
 import random
 import time
+import datetime
 
 # create YandexImage parser's instance
 parser = YandexImage()
@@ -123,7 +124,7 @@ def img_saver(request_str: str, img_count: int,
         else:
             print(f"Successfully created the subdirectory {request_str}")
 
-        img_path = os.path.join(path_img_subdir, str(num))+'.jpg'
+        img_path = os.path.join(path_img_subdir, str(datetime.datetime.now().timestamp()).replace(".", ""))+'.jpg'
 
         with open(img_path, 'wb') as handler:
             handler.write(img_data)
