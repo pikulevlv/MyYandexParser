@@ -23,6 +23,9 @@ img_dir_path_ = os.path.join(os.getcwd(), img_dir_name)
 file_name_ = 'colors_list.csv'
 file_path_ = os.path.join(os.getcwd(), file_name_)
 
+# how many images to download for every kind of request
+img_count_ = 25
+
 
 def get_color_list(file_path: str, show_dict: bool = False) -> list:
     """
@@ -75,7 +78,7 @@ def latinic(string: str) -> str:
     # transliterate a string
     string = translit(string, reversed=True)
     # replace punctuation symbols
-    string = " ".join(re.split("[!;,'\s_]+", string))
+    string = " ".join(re.split("[!;,'_]+", string))
     pattern = re.compile('( | )')
     # replace whitespaces with underscores
     string = pattern.sub('_', string)
@@ -106,7 +109,7 @@ def img_saver(request_str: str, color_str: str, img_count: int,
             parser.search(request_str + color_str, sizes=parser.size.small)
     ):
         # stop iters if iter number is more than img_count
-        if num > (img_count-1):
+        if num > (img_count - 1):
             break
         print(f"iter #{num}")
         print(item.title)
@@ -127,18 +130,20 @@ def img_saver(request_str: str, color_str: str, img_count: int,
             print(f"Successfully created the subdirectory {request_str}")
 
         img_path = os.path.join(path_img_subdir,
-                                str(datetime.datetime.now().timestamp()).replace(".", "")) \
-                   + '.jpg'
+                                str(
+                                    datetime.datetime.now().timestamp()
+                                ).replace(".", ""))
+        img_path += '.jpg'
 
         with open(img_path, 'wb') as handler:
             handler.write(img_data)
             print("Image downloaded!")
-        time.sleep(random.random()*2)
+        time.sleep(random.random() * 2)
 
 
 if __name__ == '__main__':
     color_list = get_color_list(file_path=file_path_, show_dict=True)
-    request_phrase_list = ['интерьер в цвете ', '']
+    request_phrase_list = ['интерьер в цвете ', 'в цвете ']
 
     for color in color_list:
         color_str_ = color
@@ -149,4 +154,5 @@ if __name__ == '__main__':
                 request_str_ = ''
 
             img_saver(request_str=request_str_, color_str=color_str_,
-                      img_count=25, img_dir_path=img_dir_path_, parser=parser)
+                      img_count=img_count_, img_dir_path=img_dir_path_,
+                      parser=parser)
