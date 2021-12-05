@@ -82,12 +82,14 @@ def latinic(string: str) -> str:
     return string
 
 
-def img_saver(request_str: str, img_count: int,
+def img_saver(request_str: str, color_str: str, img_count: int,
               img_dir_path: str, parser) -> None:
     """
     The function parses and saves images from Yandex
     :param request_str: string with request phrase/word,
         example: 'Interior in colors'
+    :param color_str: string with color name,
+        example: 'lawngreen'
     :param img_count: int, how many images to save
     :param img_dir_path: string, path where to save images
     :param parser: a YandexImage parser's instance
@@ -101,7 +103,7 @@ def img_saver(request_str: str, img_count: int,
         print(f"The directory {img_dir_path} is successfully created")
 
     for num, item in enumerate(
-            parser.search(request_str, sizes=parser.size.small)
+            parser.search(request_str + color_str, sizes=parser.size.small)
     ):
         # stop iters if iter number is more than img_count
         if num > (img_count-1):
@@ -112,7 +114,7 @@ def img_saver(request_str: str, img_count: int,
         print(item.preview.url)
         print("(", item.size, ")", sep='')
         img_data = requests.get(item.preview.url).content
-        path_img_subdir = os.path.join(img_dir_path, request_str)
+        path_img_subdir = os.path.join(img_dir_path, color_str)
         print("Saved in subdir: ", path_img_subdir)
 
         try:
@@ -124,7 +126,9 @@ def img_saver(request_str: str, img_count: int,
         else:
             print(f"Successfully created the subdirectory {request_str}")
 
-        img_path = os.path.join(path_img_subdir, str(datetime.datetime.now().timestamp()).replace(".", ""))+'.jpg'
+        img_path = os.path.join(path_img_subdir,
+                                str(datetime.datetime.now().timestamp()).replace(".", "")) \
+                   + '.jpg'
 
         with open(img_path, 'wb') as handler:
             handler.write(img_data)
@@ -134,9 +138,15 @@ def img_saver(request_str: str, img_count: int,
 
 if __name__ == '__main__':
     color_list = get_color_list(file_path=file_path_, show_dict=True)
+    request_phrase_list = ['интерьер в цвете ', '']
 
     for color in color_list:
-        request_str_ = color
-        request_str_ = latinic('интерьер в цвете ' + color)
-        img_saver(request_str=request_str_, img_count=50,
-                  img_dir_path=img_dir_path_, parser=parser)
+        color_str_ = color
+        for request_phrase in request_phrase_list:
+            try:
+                request_str_ = latinic(request_phrase)
+            except:
+                request_str_ = ''
+
+            img_saver(request_str=request_str_, color_str=color_str_,
+                      img_count=25, img_dir_path=img_dir_path_, parser=parser)
